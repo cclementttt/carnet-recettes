@@ -27,15 +27,16 @@ export default function UnitPicker({ value, onChange }: Props) {
 
   if (Platform.OS === 'web') {
     return (
-      <View style={styles.webWrapper}>
+      <>
         <Pressable style={styles.trigger} onPress={() => setOpen(!open)}>
           <Text style={styles.triggerText}>{value === '' ? '—' : value}</Text>
         </Pressable>
         {open && (
           <>
             <Pressable style={styles.webOverlay} onPress={() => setOpen(false)} />
-            <View style={styles.webDropdown}>
-              <ScrollView style={styles.webDropdownScroll}>
+            <View style={styles.webSheet}>
+              <Text style={styles.webTitle}>Unité</Text>
+              <ScrollView style={styles.webScroll}>
                 {UNITS.map((unit) => (
                   <Pressable
                     key={unit || 'none'}
@@ -51,7 +52,7 @@ export default function UnitPicker({ value, onChange }: Props) {
             </View>
           </>
         )}
-      </View>
+      </>
     );
   }
 
@@ -82,10 +83,6 @@ export default function UnitPicker({ value, onChange }: Props) {
 }
 
 const styles = StyleSheet.create({
-  webWrapper: {
-    position: 'relative' as any,
-    zIndex: 100,
-  },
   trigger: {
     borderRadius: radius.sm,
     backgroundColor: colors.surfaceMuted,
@@ -118,37 +115,44 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
+    backgroundColor: 'rgba(20,16,12,0.4)',
     zIndex: 998,
   },
-  webDropdown: {
-    position: 'absolute' as any,
-    top: '100%',
+  webSheet: {
+    position: 'fixed' as any,
+    bottom: 0,
+    left: 0,
     right: 0,
-    zIndex: 999,
     backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    borderWidth: 1,
-    borderColor: colors.border,
-    marginTop: 4,
-    minWidth: 130,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 8,
+    borderTopLeftRadius: radius.xl,
+    borderTopRightRadius: radius.xl,
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.lg,
+    paddingBottom: spacing.xxl,
+    zIndex: 999,
+    maxHeight: '50%',
   },
-  webDropdownScroll: {
-    maxHeight: 250,
+  webTitle: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: colors.textMuted,
+    textAlign: 'center',
+    marginBottom: spacing.md,
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
-  option: {
-    paddingVertical: spacing.lg,
-    paddingHorizontal: spacing.xl,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+  webScroll: {
+    maxHeight: 300,
   },
   webOption: {
     paddingVertical: spacing.md,
     paddingHorizontal: spacing.lg,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.border,
+  },
+  option: {
+    paddingVertical: spacing.lg,
+    paddingHorizontal: spacing.xl,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
   },
