@@ -458,10 +458,12 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   ingredientName: {
-    flex: 2,
+    flex: 3,
+    minWidth: 0,
   },
   ingredientQuantity: {
-    flex: 1,
+    width: 55,
+    flexShrink: 0,
   },
   removeButton: {
     width: 28,
