@@ -1,10 +1,11 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
-import { Alert, Pressable, SectionList, StyleSheet, Text, View } from 'react-native';
+import { Alert, Pressable, SectionList, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/types';
 import {
+  addManualItem,
   clearCheckedItems,
   clearShoppingList,
   getShoppingList,
@@ -20,6 +21,7 @@ type Props = NativeStackScreenProps<RootStackParamList, 'ShoppingList'>;
 export default function ShoppingListScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
   const [items, setItems] = useState<ShoppingListItem[]>([]);
+  const [newItemText, setNewItemText] = useState('');
 
   const load = useCallback(async () => {
     setItems(await getShoppingList());
@@ -30,6 +32,14 @@ export default function ShoppingListScreen({ navigation }: Props) {
       load();
     }, [load])
   );
+
+  const handleAddItem = async () => {
+    const text = newItemText.trim();
+    if (!text) return;
+    await addManualItem(text);
+    setNewItemText('');
+    load();
+  };
 
   const handleExport = async () => {
     if (items.length === 0) return;
@@ -87,16 +97,35 @@ export default function ShoppingListScreen({ navigation }: Props) {
 
   return (
     <View style={styles.container}>
+      <View style={styles.addBar}>
+        <TextInput
+          style={styles.addInput}
+          value={newItemText}
+          onChangeText={setNewItemText}
+          placeholder="Ajouter un article..."
+          placeholderTextColor={colors.textMuted}
+          onSubmitEditing={handleAddItem}
+          returnKeyType="done"
+        />
+        <Pressable
+          style={[styles.addButton, !newItemText.trim() && styles.addButtonDisabled]}
+          onPress={handleAddItem}
+          disabled={!newItemText.trim()}
+        >
+          <Text style={styles.addButtonText}>+</Text>
+        </Pressable>
+      </View>
+
       <SectionList
         sections={sections}
         keyExtractor={(item) => item.id}
         contentContainerStyle={styles.listContent}
+        keyboardShouldPersistTaps="handled"
         renderSectionHeader={({ section }) => <Text style={styles.sectionHeader}>{section.title}</Text>}
         renderItem={({ item }) => (
           <Pressable
             style={styles.row}
             onPress={() => handleToggle(item.id)}
-            onLongPress={() => handleRemove(item.id)}
           >
             <View style={[styles.checkbox, item.checked && styles.checkboxChecked]}>
               {item.checked && <Text style={styles.checkmark}>✓</Text>}
@@ -104,12 +133,19 @@ export default function ShoppingListScreen({ navigation }: Props) {
             <Text style={[styles.itemText, item.checked && styles.itemTextChecked]}>
               {[item.quantity, item.unit].filter(Boolean).join(' ')} {item.name}
             </Text>
+            <Pressable
+              style={styles.deleteButton}
+              onPress={() => handleRemove(item.id)}
+              hitSlop={8}
+            >
+              <Text style={styles.deleteButtonText}>✕</Text>
+            </Pressable>
           </Pressable>
         )}
         ListEmptyComponent={
           <View style={styles.empty}>
             <Text style={styles.emptyText}>
-              Ta liste de courses est vide. Ajoute des ingrédients depuis une recette.
+              Ta liste de courses est vide. Ajoute un article ci-dessus ou depuis une recette.
             </Text>
           </View>
         }
@@ -133,6 +169,42 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.background,
+  },
+  addBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.lg,
+    paddingTop: spacing.md,
+    paddingBottom: spacing.sm,
+    gap: spacing.sm,
+  },
+  addInput: {
+    flex: 1,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.md,
+    fontSize: 15,
+    color: colors.text,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  addButton: {
+    width: 40,
+    height: 40,
+    borderRadius: radius.lg,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addButtonDisabled: {
+    opacity: 0.4,
+  },
+  addButtonText: {
+    color: '#fff',
+    fontSize: 22,
+    fontWeight: '700',
+    lineHeight: 24,
   },
   listContent: {
     paddingBottom: 100,
@@ -185,6 +257,20 @@ const styles = StyleSheet.create({
   itemTextChecked: {
     color: colors.textMuted,
     textDecorationLine: 'line-through',
+  },
+  deleteButton: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: colors.dangerMuted,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: spacing.sm,
+  },
+  deleteButtonText: {
+    color: colors.danger,
+    fontSize: 13,
+    fontWeight: '700',
   },
   empty: {
     paddingTop: 80,

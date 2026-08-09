@@ -30,6 +30,20 @@ export async function addIngredientsToShoppingList(
   await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify([...items, ...newItems]));
 }
 
+export async function addManualItem(name: string): Promise<void> {
+  const items = await getShoppingList();
+  const newItem: ShoppingListItem = {
+    id: uuidv4(),
+    name,
+    quantity: '',
+    unit: '',
+    recipeName: 'Ajout manuel',
+    checked: false,
+    createdAt: Date.now(),
+  };
+  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify([...items, newItem]));
+}
+
 export async function toggleShoppingItem(id: string): Promise<void> {
   const items = await getShoppingList();
   const updated = items.map((item) => (item.id === id ? { ...item, checked: !item.checked } : item));
