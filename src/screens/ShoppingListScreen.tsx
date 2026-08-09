@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
-import { Alert, Pressable, SectionList, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Platform, Pressable, SectionList, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/types';
@@ -47,7 +47,6 @@ export default function ShoppingListScreen({ navigation }: Props) {
       await exportShoppingListAsPdf(items);
     } catch (error) {
       console.error('[export] shopping list failed', error);
-      Alert.alert('Export impossible', 'Une erreur est survenue lors de la génération du PDF.');
     }
   };
 
@@ -81,19 +80,28 @@ export default function ShoppingListScreen({ navigation }: Props) {
     load();
   };
 
-  const handleClearAll = () => {
-    Alert.alert('Vider toute la liste ?', undefined, [
-      { text: 'Annuler', style: 'cancel' },
-      {
-        text: 'Vider',
-        style: 'destructive',
-        onPress: async () => {
-          await clearShoppingList();
-          setEditing(false);
-          load();
+  const handleClearAll = async () => {
+    if (Platform.OS === 'web') {
+      if (window.confirm('Vider toute la liste ?')) {
+        await clearShoppingList();
+        setEditing(false);
+        load();
+      }
+    } else {
+      const { Alert } = require('react-native');
+      Alert.alert('Vider toute la liste ?', undefined, [
+        { text: 'Annuler', style: 'cancel' },
+        {
+          text: 'Vider',
+          style: 'destructive',
+          onPress: async () => {
+            await clearShoppingList();
+            setEditing(false);
+            load();
+          },
         },
-      },
-    ]);
+      ]);
+    }
   };
 
   return (
