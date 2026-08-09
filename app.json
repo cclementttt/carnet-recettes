@@ -21,7 +21,11 @@
     },
     "web": {
       "favicon": "./assets/favicon.png",
-      "bundler": "metro"
+      "bundler": "metro",
+      "name": "Carnet de recettes",
+      "shortName": "Recettes",
+      "themeColor": "#FDF6F0",
+      "backgroundColor": "#FDF6F0"
     },
     "experiments": {
       "baseUrl": "/carnet-recettes"
