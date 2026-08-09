@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import {
   FlatList,
   Modal,
@@ -19,24 +19,34 @@ type Props = {
 
 export default function UnitPicker({ value, onChange }: Props) {
   const [open, setOpen] = useState(false);
+  const [pos, setPos] = useState({ top: 0, right: 0 });
+  const triggerRef = useRef<View>(null);
 
   const handleSelect = (unit: Unit) => {
     onChange(unit);
     setOpen(false);
   };
 
+  const handleOpen = () => {
+    if (Platform.OS === 'web' && triggerRef.current) {
+      const node = triggerRef.current as unknown as HTMLElement;
+      const rect = node.getBoundingClientRect();
+      setPos({ top: rect.bottom + 4, right: window.innerWidth - rect.right });
+    }
+    setOpen(true);
+  };
+
   if (Platform.OS === 'web') {
     return (
       <>
-        <Pressable style={styles.trigger} onPress={() => setOpen(!open)}>
+        <Pressable ref={triggerRef} style={styles.trigger} onPress={handleOpen}>
           <Text style={styles.triggerText}>{value === '' ? '—' : value}</Text>
         </Pressable>
         {open && (
           <>
             <Pressable style={styles.webOverlay} onPress={() => setOpen(false)} />
-            <View style={styles.webSheet}>
-              <Text style={styles.webTitle}>Unité</Text>
-              <ScrollView style={styles.webScroll}>
+            <View style={[styles.webDropdown, { top: pos.top, right: pos.right } as any]}>
+              <ScrollView>
                 {UNITS.map((unit) => (
                   <Pressable
                     key={unit || 'none'}
@@ -44,7 +54,7 @@ export default function UnitPicker({ value, onChange }: Props) {
                     onPress={() => handleSelect(unit)}
                   >
                     <Text style={[styles.optionText, unit === value && styles.optionTextActive]}>
-                      {unit === '' ? 'Sans unité' : unit}
+                      {unit === '' ? '—' : unit}
                     </Text>
                   </Pressable>
                 ))}
@@ -70,7 +80,7 @@ export default function UnitPicker({ value, onChange }: Props) {
               renderItem={({ item }) => (
                 <Pressable style={styles.option} onPress={() => handleSelect(item)}>
                   <Text style={[styles.optionText, item === value && styles.optionTextActive]}>
-                    {item === '' ? 'Sans unité' : item}
+                    {item === '' ? '—' : item}
                   </Text>
                 </Pressable>
               )}
@@ -115,40 +125,28 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    backgroundColor: 'rgba(20,16,12,0.4)',
-    zIndex: 998,
+    backgroundColor: 'transparent',
+    zIndex: 9998,
   },
-  webSheet: {
+  webDropdown: {
     position: 'fixed' as any,
-    bottom: 0,
-    left: 0,
-    right: 0,
     backgroundColor: colors.surface,
-    borderTopLeftRadius: radius.xl,
-    borderTopRightRadius: radius.xl,
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.lg,
-    paddingBottom: spacing.xxl,
-    zIndex: 999,
-    maxHeight: '50%',
-  },
-  webTitle: {
-    fontSize: 13,
-    fontWeight: '700',
-    color: colors.textMuted,
-    textAlign: 'center',
-    marginBottom: spacing.md,
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
-  },
-  webScroll: {
-    maxHeight: 300,
+    borderRadius: radius.md,
+    paddingVertical: spacing.xs,
+    zIndex: 9999,
+    minWidth: 120,
+    maxHeight: 280,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    elevation: 8,
+    borderWidth: 1,
+    borderColor: colors.border,
   },
   webOption: {
-    paddingVertical: spacing.md,
+    paddingVertical: spacing.sm,
     paddingHorizontal: spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
   },
   option: {
     paddingVertical: spacing.lg,
