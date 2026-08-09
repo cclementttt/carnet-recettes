@@ -4,11 +4,11 @@ import {
   Modal,
   Platform,
   Pressable,
-  ScrollView,
   StyleSheet,
   Text,
   View,
 } from 'react-native';
+import { createPortal } from 'react-dom';
 import { colors, radius, spacing } from '../theme';
 import { Unit, UNITS } from '../types/recipe';
 
@@ -42,25 +42,24 @@ export default function UnitPicker({ value, onChange }: Props) {
         <Pressable ref={triggerRef} style={styles.trigger} onPress={handleOpen}>
           <Text style={styles.triggerText}>{value === '' ? '—' : value}</Text>
         </Pressable>
-        {open && (
+        {open && createPortal(
           <>
-            <Pressable style={styles.webOverlay} onPress={() => setOpen(false)} />
-            <View style={[styles.webDropdown, { top: pos.top, right: pos.right } as any]}>
-              <ScrollView>
-                {UNITS.map((unit) => (
-                  <Pressable
-                    key={unit || 'none'}
-                    style={styles.webOption}
-                    onPress={() => handleSelect(unit)}
-                  >
-                    <Text style={[styles.optionText, unit === value && styles.optionTextActive]}>
-                      {unit === '' ? '—' : unit}
-                    </Text>
-                  </Pressable>
-                ))}
-              </ScrollView>
-            </View>
-          </>
+            <div style={overlayStyle} onClick={() => setOpen(false)} />
+            <div style={{ ...dropdownStyle, top: pos.top, right: pos.right }}>
+              {UNITS.map((unit) => (
+                <div
+                  key={unit || 'none'}
+                  style={optionStyle}
+                  onClick={() => handleSelect(unit)}
+                >
+                  <span style={unit === value ? activeTextStyle : textStyle}>
+                    {unit === '' ? '—' : unit}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </>,
+          document.body
         )}
       </>
     );
@@ -92,6 +91,45 @@ export default function UnitPicker({ value, onChange }: Props) {
   );
 }
 
+const overlayStyle: React.CSSProperties = {
+  position: 'fixed',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: 'transparent',
+  zIndex: 99998,
+};
+
+const dropdownStyle: React.CSSProperties = {
+  position: 'fixed',
+  backgroundColor: colors.surface,
+  borderRadius: 8,
+  padding: '4px 0',
+  zIndex: 99999,
+  minWidth: 120,
+  maxHeight: 280,
+  overflowY: 'auto',
+  boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+  border: `1px solid ${colors.border}`,
+};
+
+const optionStyle: React.CSSProperties = {
+  padding: '10px 16px',
+  cursor: 'pointer',
+};
+
+const textStyle: React.CSSProperties = {
+  fontSize: 15,
+  color: colors.text,
+};
+
+const activeTextStyle: React.CSSProperties = {
+  fontSize: 15,
+  color: colors.primary,
+  fontWeight: '700',
+};
+
 const styles = StyleSheet.create({
   trigger: {
     borderRadius: radius.sm,
@@ -118,35 +156,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: radius.xl,
     paddingVertical: spacing.sm,
     maxHeight: 320,
-  },
-  webOverlay: {
-    position: 'fixed' as any,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'transparent',
-    zIndex: 9998,
-  },
-  webDropdown: {
-    position: 'fixed' as any,
-    backgroundColor: colors.surface,
-    borderRadius: radius.md,
-    paddingVertical: spacing.xs,
-    zIndex: 9999,
-    minWidth: 120,
-    maxHeight: 280,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.25,
-    shadowRadius: 12,
-    elevation: 8,
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  webOption: {
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.lg,
   },
   option: {
     paddingVertical: spacing.lg,
