@@ -1,6 +1,6 @@
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useCallback, useLayoutEffect, useMemo, useState } from 'react';
-import { Platform, Pressable, SectionList, StyleSheet, Text, TextInput, View } from 'react-native';
+import { Pressable, SectionList, StyleSheet, Text, TextInput, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useFocusEffect } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/types';
@@ -80,28 +80,17 @@ export default function ShoppingListScreen({ navigation }: Props) {
     load();
   };
 
+  const [confirmClear, setConfirmClear] = useState(false);
+
   const handleClearAll = async () => {
-    if (Platform.OS === 'web') {
-      if (window.confirm('Vider toute la liste ?')) {
-        await clearShoppingList();
-        setEditing(false);
-        load();
-      }
-    } else {
-      const { Alert } = require('react-native');
-      Alert.alert('Vider toute la liste ?', undefined, [
-        { text: 'Annuler', style: 'cancel' },
-        {
-          text: 'Vider',
-          style: 'destructive',
-          onPress: async () => {
-            await clearShoppingList();
-            setEditing(false);
-            load();
-          },
-        },
-      ]);
+    if (!confirmClear) {
+      setConfirmClear(true);
+      return;
     }
+    await clearShoppingList();
+    setConfirmClear(false);
+    setEditing(false);
+    load();
   };
 
   return (
@@ -166,11 +155,15 @@ export default function ShoppingListScreen({ navigation }: Props) {
         <View style={[styles.footer, { paddingBottom: spacing.lg + insets.bottom }]}>
           {editing ? (
             <>
-              <Pressable style={[styles.footerButton, styles.footerButtonDanger]} onPress={handleClearAll}>
-                <Text style={[styles.footerButtonText, styles.footerButtonTextDanger]}>Tout supprimer</Text>
+              <Pressable style={[styles.footerButton, confirmClear ? styles.footerButtonDone : styles.footerButtonDanger]} onPress={handleClearAll}>
+                <Text style={[styles.footerButtonText, confirmClear ? styles.footerButtonTextDone : styles.footerButtonTextDanger]}>
+                  {confirmClear ? 'Confirmer ?' : 'Tout supprimer'}
+                </Text>
               </Pressable>
-              <Pressable style={[styles.footerButton, styles.footerButtonDone]} onPress={() => setEditing(false)}>
-                <Text style={[styles.footerButtonText, styles.footerButtonTextDone]}>Terminé</Text>
+              <Pressable style={[styles.footerButton, confirmClear ? styles.footerButtonDanger : styles.footerButtonDone]} onPress={() => { setConfirmClear(false); if (!confirmClear) setEditing(false); }}>
+                <Text style={[styles.footerButtonText, confirmClear ? styles.footerButtonTextDanger : styles.footerButtonTextDone]}>
+                  {confirmClear ? 'Annuler' : 'Terminé'}
+                </Text>
               </Pressable>
             </>
           ) : (
