@@ -322,12 +322,12 @@ const styles = StyleSheet.create({
     fontSize: 15,
   },
   content: {
-    padding: spacing.lg,
+    padding: spacing.xl,
     paddingBottom: 60,
   },
   photoPicker: {
-    height: 180,
-    borderRadius: radius.lg,
+    height: 200,
+    borderRadius: radius.xl,
     backgroundColor: colors.surfaceMuted,
     alignItems: 'center',
     justifyContent: 'center',
@@ -335,20 +335,20 @@ const styles = StyleSheet.create({
     overflow: 'hidden',
   },
   photoPickerIcon: {
-    fontSize: 28,
-    marginBottom: spacing.xs,
+    fontSize: 32,
+    marginBottom: spacing.sm,
   },
   photoPickerText: {
     color: colors.textMuted,
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   photo: {
     width: '100%',
     height: '100%',
   },
   iconPreview: {
-    fontSize: 64,
+    fontSize: 72,
   },
   photoActionsRow: {
     flexDirection: 'row',
@@ -357,12 +357,11 @@ const styles = StyleSheet.create({
   },
   photoActionButton: {
     flex: 1,
-    paddingVertical: spacing.sm,
+    paddingVertical: spacing.md,
     borderRadius: radius.md,
     backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
     alignItems: 'center',
+    ...shadow.soft,
   },
   photoActionButtonText: {
     fontSize: 14,
@@ -370,27 +369,27 @@ const styles = StyleSheet.create({
     color: colors.text,
   },
   label: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '700',
     marginBottom: spacing.sm,
     color: colors.textMuted,
     textTransform: 'uppercase',
-    letterSpacing: 0.4,
+    letterSpacing: 0.8,
   },
   input: {
     borderRadius: radius.md,
     backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    fontSize: 15,
+    paddingVertical: spacing.md + 2,
+    fontSize: 16,
     color: colors.text,
+    ...shadow.soft,
   },
   multiline: {
-    minHeight: 110,
+    minHeight: 120,
     textAlignVertical: 'top',
     marginBottom: spacing.xl,
+    lineHeight: 22,
   },
   categoryRow: {
     flexDirection: 'row',
@@ -400,20 +399,18 @@ const styles = StyleSheet.create({
   },
   categoryChip: {
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.sm,
+    paddingVertical: spacing.sm + 2,
     borderRadius: radius.pill,
     backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
+    ...shadow.soft,
   },
   categoryChipActive: {
     backgroundColor: colors.primary,
-    borderColor: colors.primary,
   },
   categoryChipText: {
     fontSize: 14,
-    color: colors.text,
-    fontWeight: '500',
+    color: colors.textSecondary,
+    fontWeight: '600',
   },
   categoryChipTextActive: {
     color: '#fff',
@@ -421,6 +418,7 @@ const styles = StyleSheet.create({
   },
   categoryChipAdd: {
     backgroundColor: 'transparent',
+    borderWidth: 1.5,
     borderStyle: 'dashed',
     borderColor: colors.primary,
   },
@@ -432,10 +430,9 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: colors.surface,
     borderRadius: radius.lg,
-    borderWidth: 1,
-    borderColor: colors.border,
-    padding: spacing.sm,
+    padding: spacing.md,
     marginBottom: spacing.sm,
+    ...shadow.soft,
   },
   ingredientRow: {
     flexDirection: 'row',
@@ -444,7 +441,7 @@ const styles = StyleSheet.create({
     paddingBottom: spacing.sm,
     marginBottom: spacing.sm,
     borderBottomWidth: 1,
-    borderBottomColor: colors.border,
+    borderBottomColor: colors.borderLight,
   },
   ingredientRowLast: {
     marginBottom: 0,
@@ -455,8 +452,8 @@ const styles = StyleSheet.create({
     borderRadius: radius.sm,
     backgroundColor: colors.surfaceMuted,
     paddingHorizontal: spacing.sm,
-    paddingVertical: spacing.sm,
-    fontSize: 14,
+    paddingVertical: spacing.sm + 2,
+    fontSize: 15,
     color: colors.text,
   },
   ingredientName: {
@@ -468,8 +465,9 @@ const styles = StyleSheet.create({
     flexShrink: 0,
   },
   removeButton: {
-    width: 28,
-    height: 28,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     alignItems: 'center',
     justifyContent: 'center',
   },
@@ -484,7 +482,11 @@ const styles = StyleSheet.create({
   addIngredientButton: {
     alignSelf: 'flex-start',
     marginBottom: spacing.xl,
-    marginTop: spacing.xs,
+    marginTop: spacing.sm,
+    backgroundColor: colors.primaryLight,
+    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing.sm,
+    borderRadius: radius.pill,
   },
   addIngredientButtonText: {
     color: colors.primary,
@@ -493,8 +495,8 @@ const styles = StyleSheet.create({
   },
   saveButton: {
     backgroundColor: colors.primary,
-    paddingVertical: spacing.lg,
-    borderRadius: radius.md,
+    paddingVertical: spacing.lg + 2,
+    borderRadius: radius.lg,
     alignItems: 'center',
     marginTop: spacing.md,
     ...shadow.fab,
@@ -504,11 +506,11 @@ const styles = StyleSheet.create({
   },
   saveButtonText: {
     color: '#fff',
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '700',
     letterSpacing: 0.3,
   },
   bottomSpacer: {
-    height: spacing.xl,
+    height: spacing.xxl,
   },
 });

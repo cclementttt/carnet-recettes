@@ -102,38 +102,37 @@ export default function RecipeListScreen({ navigation }: Props) {
 
   return (
     <SafeAreaView style={styles.container} edges={['top']}>
-      <View style={styles.headerRow}>
-        <Text style={styles.heading}>Mes recettes</Text>
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.heading}>Mes recettes</Text>
+          {recipes.length > 0 && (
+            <Text style={styles.recipeCount}>
+              {recipes.length} recette{recipes.length > 1 ? 's' : ''}
+            </Text>
+          )}
+        </View>
         <Pressable style={styles.cartButton} onPress={() => navigation.navigate('ShoppingList')}>
           <Text style={styles.cartButtonIcon}>🛒</Text>
         </Pressable>
       </View>
 
       <View style={styles.modeRow}>
-        <Pressable
-          style={[styles.modeButton, mode === 'mine' && styles.modeButtonActive]}
-          onPress={() => setMode('mine')}
-        >
-          <Text style={[styles.modeButtonText, mode === 'mine' && styles.modeButtonTextActive]}>
-            Mes recettes
-          </Text>
-        </Pressable>
-        <Pressable
-          style={[styles.modeButton, mode === 'ai' && styles.modeButtonActive]}
-          onPress={() => setMode('ai')}
-        >
-          <Text style={[styles.modeButtonText, mode === 'ai' && styles.modeButtonTextActive]}>
-            Recherche IA
-          </Text>
-        </Pressable>
-        <Pressable
-          style={[styles.modeButton, mode === 'leftovers' && styles.modeButtonActive]}
-          onPress={() => setMode('leftovers')}
-        >
-          <Text style={[styles.modeButtonText, mode === 'leftovers' && styles.modeButtonTextActive]}>
-            Anti-gaspi
-          </Text>
-        </Pressable>
+        {([
+          { key: 'mine' as Mode, label: 'Mes recettes', icon: '📖' },
+          { key: 'ai' as Mode, label: 'Recherche IA', icon: '✨' },
+          { key: 'leftovers' as Mode, label: 'Anti-gaspi', icon: '♻️' },
+        ]).map((tab) => (
+          <Pressable
+            key={tab.key}
+            style={[styles.modeButton, mode === tab.key && styles.modeButtonActive]}
+            onPress={() => setMode(tab.key)}
+          >
+            <Text style={styles.modeButtonIcon}>{tab.icon}</Text>
+            <Text style={[styles.modeButtonText, mode === tab.key && styles.modeButtonTextActive]}>
+              {tab.label}
+            </Text>
+          </Pressable>
+        ))}
       </View>
 
       {mode === 'mine' ? (
@@ -142,7 +141,7 @@ export default function RecipeListScreen({ navigation }: Props) {
             <Text style={styles.searchIcon}>🔍</Text>
             <TextInput
               style={styles.search}
-              placeholder="Rechercher une recette ou un ingrédient..."
+              placeholder="Rechercher..."
               placeholderTextColor={colors.textMuted}
               value={query}
               onChangeText={setQuery}
@@ -161,18 +160,24 @@ export default function RecipeListScreen({ navigation }: Props) {
               />
             )}
             renderSectionHeader={({ section }) => (
-              <Text style={styles.sectionHeader}>{section.title}</Text>
+              <View style={styles.sectionHeaderRow}>
+                <View style={styles.sectionHeaderLine} />
+                <Text style={styles.sectionHeader}>{section.title}</Text>
+                <View style={styles.sectionHeaderLine} />
+              </View>
             )}
             ListEmptyComponent={
               <View style={styles.empty}>
-                <Text style={styles.emptyIcon}>{recipes.length === 0 ? '👨‍🍳' : '🔍'}</Text>
+                <View style={styles.emptyIconWrapper}>
+                  <Text style={styles.emptyIcon}>{recipes.length === 0 ? '👨‍🍳' : '🔍'}</Text>
+                </View>
                 <Text style={styles.emptyTitle}>
                   {recipes.length === 0 ? 'Ton carnet est vide' : 'Aucun résultat'}
                 </Text>
                 <Text style={styles.emptyText}>
                   {recipes.length === 0
                     ? 'Appuie sur + pour ajouter ta première recette !'
-                    : 'Aucune recette ne correspond à ta recherche.'}
+                    : 'Essaie un autre mot-clé.'}
                 </Text>
               </View>
             }
@@ -205,51 +210,67 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
   },
-  headerRow: {
+  header: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    paddingHorizontal: spacing.lg,
+    paddingHorizontal: spacing.xl,
     paddingTop: spacing.lg,
+    paddingBottom: spacing.sm,
   },
   heading: {
-    fontSize: 28,
+    fontSize: 30,
     fontWeight: '800',
     color: colors.text,
+    letterSpacing: -0.5,
+  },
+  recipeCount: {
+    fontSize: 14,
+    color: colors.textMuted,
+    fontWeight: '500',
+    marginTop: 2,
   },
   cartButton: {
-    width: 44,
-    height: 44,
-    borderRadius: radius.md,
-    backgroundColor: colors.surfaceMuted,
+    width: 48,
+    height: 48,
+    borderRadius: radius.lg,
+    backgroundColor: colors.surface,
     alignItems: 'center',
     justifyContent: 'center',
+    ...shadow.soft,
   },
   cartButtonIcon: {
-    fontSize: 20,
+    fontSize: 22,
   },
   modeRow: {
     flexDirection: 'row',
-    marginHorizontal: spacing.lg,
-    marginTop: spacing.lg,
+    marginHorizontal: spacing.xl,
+    marginTop: spacing.sm,
     backgroundColor: colors.surfaceMuted,
     borderRadius: radius.md,
     padding: 3,
+    gap: 3,
   },
   modeButton: {
     flex: 1,
-    paddingVertical: spacing.sm,
-    borderRadius: radius.sm + 2,
+    flexDirection: 'row',
+    paddingVertical: spacing.sm + 2,
+    borderRadius: radius.sm,
     alignItems: 'center',
+    justifyContent: 'center',
+    gap: 4,
   },
   modeButtonActive: {
     backgroundColor: colors.surface,
     ...shadow.card,
   },
+  modeButtonIcon: {
+    fontSize: 12,
+  },
   modeButtonText: {
-    fontSize: 13,
+    fontSize: 12,
     color: colors.textMuted,
-    fontWeight: '500',
+    fontWeight: '600',
   },
   modeButtonTextActive: {
     color: colors.text,
@@ -258,65 +279,85 @@ const styles = StyleSheet.create({
   searchWrapper: {
     flexDirection: 'row',
     alignItems: 'center',
-    margin: spacing.lg,
+    marginHorizontal: spacing.xl,
+    marginTop: spacing.md,
+    marginBottom: spacing.sm,
     paddingHorizontal: spacing.md,
-    borderRadius: radius.lg,
+    borderRadius: radius.md,
     backgroundColor: colors.surface,
-    borderWidth: 1,
-    borderColor: colors.border,
+    ...shadow.soft,
   },
   searchIcon: {
     fontSize: 14,
     marginRight: spacing.sm,
+    opacity: 0.6,
   },
   search: {
     flex: 1,
-    paddingVertical: spacing.md,
+    paddingVertical: spacing.md + 2,
     fontSize: 15,
     color: colors.text,
   },
   listContent: {
-    paddingBottom: 100,
+    paddingTop: spacing.sm,
+    paddingBottom: 120,
+  },
+  sectionHeaderRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: spacing.xl,
+    paddingTop: spacing.xl,
+    paddingBottom: spacing.md,
+    gap: spacing.md,
+  },
+  sectionHeaderLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: colors.border,
   },
   sectionHeader: {
     fontSize: 12,
-    fontWeight: '800',
+    fontWeight: '700',
     color: colors.textMuted,
     textTransform: 'uppercase',
-    letterSpacing: 0.8,
-    backgroundColor: colors.background,
-    paddingHorizontal: spacing.lg,
-    paddingTop: spacing.xl,
-    paddingBottom: spacing.sm,
+    letterSpacing: 1,
   },
   empty: {
-    paddingTop: 80,
+    paddingTop: 100,
     alignItems: 'center',
   },
+  emptyIconWrapper: {
+    width: 88,
+    height: 88,
+    borderRadius: 44,
+    backgroundColor: colors.primaryLight,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginBottom: spacing.xl,
+  },
   emptyIcon: {
-    fontSize: 48,
-    marginBottom: spacing.md,
+    fontSize: 40,
   },
   emptyTitle: {
-    fontSize: 18,
+    fontSize: 20,
     fontWeight: '700',
     color: colors.text,
-    marginBottom: spacing.xs,
+    marginBottom: spacing.sm,
   },
   emptyText: {
     color: colors.textMuted,
     fontSize: 15,
     textAlign: 'center',
-    paddingHorizontal: 40,
-    lineHeight: 21,
+    paddingHorizontal: 50,
+    lineHeight: 22,
   },
   fab: {
     position: 'absolute',
     right: spacing.xl,
-    bottom: spacing.xl,
-    width: 58,
-    height: 58,
-    borderRadius: radius.xl,
+    bottom: spacing.xxl,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
@@ -324,7 +365,8 @@ const styles = StyleSheet.create({
   },
   fabText: {
     color: '#fff',
-    fontSize: 30,
-    lineHeight: 32,
+    fontSize: 28,
+    fontWeight: '300',
+    lineHeight: 30,
   },
 });

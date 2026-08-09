@@ -211,21 +211,21 @@ const styles = StyleSheet.create({
   addInput: {
     flex: 1,
     backgroundColor: colors.surface,
-    borderRadius: radius.lg,
+    borderRadius: radius.md,
     paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
+    paddingVertical: spacing.md + 2,
     fontSize: 15,
     color: colors.text,
-    borderWidth: 1,
-    borderColor: colors.border,
+    ...shadow.soft,
   },
   addButton: {
-    width: 40,
-    height: 40,
-    borderRadius: radius.lg,
+    width: 44,
+    height: 44,
+    borderRadius: radius.md,
     backgroundColor: colors.primary,
     alignItems: 'center',
     justifyContent: 'center',
+    ...shadow.fab,
   },
   addButtonDisabled: {
     opacity: 0.4,
@@ -233,7 +233,7 @@ const styles = StyleSheet.create({
   addButtonText: {
     color: '#fff',
     fontSize: 22,
-    fontWeight: '700',
+    fontWeight: '300',
     lineHeight: 24,
   },
   listContent: {
@@ -261,9 +261,9 @@ const styles = StyleSheet.create({
     ...shadow.card,
   },
   checkbox: {
-    width: 24,
-    height: 24,
-    borderRadius: radius.sm,
+    width: 26,
+    height: 26,
+    borderRadius: 13,
     borderWidth: 2,
     borderColor: colors.border,
     alignItems: 'center',
@@ -271,8 +271,8 @@ const styles = StyleSheet.create({
     marginRight: spacing.md,
   },
   checkboxChecked: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
+    backgroundColor: colors.success,
+    borderColor: colors.success,
   },
   checkmark: {
     color: '#fff',

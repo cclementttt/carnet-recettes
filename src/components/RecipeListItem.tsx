@@ -1,6 +1,6 @@
 import * as Haptics from 'expo-haptics';
-import { Animated, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useRef } from 'react';
+import { Animated, Image, Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors, radius, shadow, spacing } from '../theme';
 import { Recipe } from '../types/recipe';
 
@@ -14,16 +14,16 @@ export default function RecipeListItem({ recipe, onPress, onLongPress }: Props) 
   const scale = useRef(new Animated.Value(1)).current;
 
   const animateIn = () => {
-    Animated.spring(scale, { toValue: 0.97, useNativeDriver: true, speed: 50, bounciness: 0 }).start();
+    Animated.spring(scale, { toValue: 0.975, useNativeDriver: true, speed: 50, bounciness: 0 }).start();
   };
   const animateOut = () => {
-    Animated.spring(scale, { toValue: 1, useNativeDriver: true, speed: 20, bounciness: 4 }).start();
+    Animated.spring(scale, { toValue: 1, useNativeDriver: true, speed: 18, bounciness: 6 }).start();
   };
 
   return (
-    <Animated.View style={[styles.container, { transform: [{ scale }] }]}>
+    <Animated.View style={[styles.wrapper, { transform: [{ scale }] }]}>
       <Pressable
-        style={styles.inner}
+        style={styles.container}
         onPress={onPress}
         onPressIn={animateIn}
         onPressOut={animateOut}
@@ -45,39 +45,43 @@ export default function RecipeListItem({ recipe, onPress, onLongPress }: Props) 
             {recipe.name}
           </Text>
           <View style={styles.metaRow}>
-            <Text style={styles.subtitle}>
-              {recipe.ingredients.length} ingrédient{recipe.ingredients.length > 1 ? 's' : ''}
-            </Text>
-            <Text style={styles.metaDot}>·</Text>
-            <Text style={styles.subtitle}>
-              {recipe.steps.length} étape{recipe.steps.length > 1 ? 's' : ''}
-            </Text>
+            <View style={styles.metaBadge}>
+              <Text style={styles.metaText}>
+                {recipe.ingredients.length} ingr.
+              </Text>
+            </View>
+            <View style={styles.metaBadge}>
+              <Text style={styles.metaText}>
+                {recipe.steps.length} étape{recipe.steps.length > 1 ? 's' : ''}
+              </Text>
+            </View>
           </View>
         </View>
-        <Text style={styles.chevron}>›</Text>
+        <View style={styles.chevronWrapper}>
+          <Text style={styles.chevron}>›</Text>
+        </View>
       </Pressable>
     </Animated.View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    marginHorizontal: spacing.lg,
-    marginBottom: spacing.sm,
-    borderRadius: radius.lg,
-    backgroundColor: colors.surface,
-    ...shadow.card,
+  wrapper: {
+    marginHorizontal: spacing.xl,
+    marginBottom: spacing.sm + 2,
   },
-  inner: {
+  container: {
     flexDirection: 'row',
     alignItems: 'center',
-    padding: spacing.sm,
+    backgroundColor: colors.surface,
+    borderRadius: radius.lg,
+    padding: spacing.md,
+    ...shadow.card,
   },
   thumbnail: {
-    width: 64,
-    height: 64,
+    width: 68,
+    height: 68,
     borderRadius: radius.md,
-    marginRight: spacing.md,
     backgroundColor: colors.surfaceMuted,
   },
   placeholder: {
@@ -85,33 +89,47 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   placeholderText: {
-    fontSize: 28,
+    fontSize: 30,
   },
   info: {
     flex: 1,
+    marginLeft: spacing.md,
   },
   name: {
-    fontSize: 16,
+    fontSize: 17,
     fontWeight: '700',
     color: colors.text,
-    marginBottom: 4,
+    marginBottom: 6,
+    letterSpacing: -0.2,
   },
   metaRow: {
     flexDirection: 'row',
+    gap: spacing.xs + 2,
+  },
+  metaBadge: {
+    backgroundColor: colors.surfaceMuted,
+    paddingHorizontal: spacing.sm + 2,
+    paddingVertical: 3,
+    borderRadius: radius.xs,
+  },
+  metaText: {
+    fontSize: 11,
+    color: colors.textMuted,
+    fontWeight: '600',
+  },
+  chevronWrapper: {
+    width: 28,
+    height: 28,
+    borderRadius: 14,
+    backgroundColor: colors.surfaceMuted,
     alignItems: 'center',
-  },
-  subtitle: {
-    fontSize: 13,
-    color: colors.textMuted,
-  },
-  metaDot: {
-    fontSize: 13,
-    color: colors.textMuted,
-    marginHorizontal: 6,
+    justifyContent: 'center',
+    marginLeft: spacing.sm,
   },
   chevron: {
-    fontSize: 22,
-    color: colors.border,
-    marginLeft: spacing.sm,
+    fontSize: 18,
+    color: colors.textMuted,
+    fontWeight: '600',
+    marginTop: -1,
   },
 });
