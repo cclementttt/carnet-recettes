@@ -6,7 +6,6 @@ import { useFocusEffect } from '@react-navigation/native';
 import { RootStackParamList } from '../navigation/types';
 import {
   addManualItem,
-  clearCheckedItems,
   clearShoppingList,
   getShoppingList,
   removeShoppingItem,
@@ -22,6 +21,7 @@ export default function ShoppingListScreen({ navigation }: Props) {
   const insets = useSafeAreaInsets();
   const [items, setItems] = useState<ShoppingListItem[]>([]);
   const [newItemText, setNewItemText] = useState('');
+  const [editing, setEditing] = useState(false);
 
   const load = useCallback(async () => {
     setItems(await getShoppingList());
@@ -81,17 +81,18 @@ export default function ShoppingListScreen({ navigation }: Props) {
     load();
   };
 
-  const handleClearChecked = () => {
-    Alert.alert('Vider les cases cochées ?', undefined, [
-      { text: 'Annuler', style: 'cancel' },
-      { text: 'Vider', style: 'destructive', onPress: async () => { await clearCheckedItems(); load(); } },
-    ]);
-  };
-
   const handleClearAll = () => {
     Alert.alert('Vider toute la liste ?', undefined, [
       { text: 'Annuler', style: 'cancel' },
-      { text: 'Vider', style: 'destructive', onPress: async () => { await clearShoppingList(); load(); } },
+      {
+        text: 'Vider',
+        style: 'destructive',
+        onPress: async () => {
+          await clearShoppingList();
+          setEditing(false);
+          load();
+        },
+      },
     ]);
   };
 
@@ -133,13 +134,15 @@ export default function ShoppingListScreen({ navigation }: Props) {
             <Text style={[styles.itemText, item.checked && styles.itemTextChecked]}>
               {[item.quantity, item.unit].filter(Boolean).join(' ')} {item.name}
             </Text>
-            <Pressable
-              style={styles.deleteButton}
-              onPress={() => handleRemove(item.id)}
-              hitSlop={8}
-            >
-              <Text style={styles.deleteButtonText}>✕</Text>
-            </Pressable>
+            {editing && (
+              <Pressable
+                style={styles.deleteButton}
+                onPress={() => handleRemove(item.id)}
+                hitSlop={8}
+              >
+                <Text style={styles.deleteButtonText}>✕</Text>
+              </Pressable>
+            )}
           </Pressable>
         )}
         ListEmptyComponent={
@@ -153,12 +156,20 @@ export default function ShoppingListScreen({ navigation }: Props) {
 
       {items.length > 0 && (
         <View style={[styles.footer, { paddingBottom: spacing.lg + insets.bottom }]}>
-          <Pressable style={styles.footerButton} onPress={handleClearChecked}>
-            <Text style={styles.footerButtonText}>Vider les cases cochées</Text>
-          </Pressable>
-          <Pressable style={[styles.footerButton, styles.footerButtonDanger]} onPress={handleClearAll}>
-            <Text style={[styles.footerButtonText, styles.footerButtonTextDanger]}>Vider tout</Text>
-          </Pressable>
+          {editing ? (
+            <>
+              <Pressable style={[styles.footerButton, styles.footerButtonDanger]} onPress={handleClearAll}>
+                <Text style={[styles.footerButtonText, styles.footerButtonTextDanger]}>Tout supprimer</Text>
+              </Pressable>
+              <Pressable style={[styles.footerButton, styles.footerButtonDone]} onPress={() => setEditing(false)}>
+                <Text style={[styles.footerButtonText, styles.footerButtonTextDone]}>Terminé</Text>
+              </Pressable>
+            </>
+          ) : (
+            <Pressable style={styles.footerButton} onPress={() => setEditing(true)}>
+              <Text style={styles.footerButtonText}>Modifier</Text>
+            </Pressable>
+          )}
         </View>
       )}
     </View>
@@ -300,6 +311,9 @@ const styles = StyleSheet.create({
   footerButtonDanger: {
     backgroundColor: colors.dangerMuted,
   },
+  footerButtonDone: {
+    backgroundColor: colors.primary,
+  },
   footerButtonText: {
     fontWeight: '700',
     color: colors.text,
@@ -307,6 +321,9 @@ const styles = StyleSheet.create({
   },
   footerButtonTextDanger: {
     color: colors.danger,
+  },
+  footerButtonTextDone: {
+    color: '#fff',
   },
   headerButton: {
     paddingHorizontal: spacing.sm,
