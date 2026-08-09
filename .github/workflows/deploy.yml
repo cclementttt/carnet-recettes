@@ -24,7 +24,7 @@ jobs:
       - run: npx expo export --platform web
       - name: Add PWA meta tags
         run: |
-          sed -i 's|</head>|<link rel="apple-touch-icon" href="/carnet-recettes/apple-touch-icon.png" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><meta name="apple-mobile-web-app-title" content="Recettes" /></head>|' dist/index.html
+          sed -i 's|</head>|<link rel="apple-touch-icon" sizes="180x180" href="/carnet-recettes/apple-touch-icon.png" /><link rel="apple-touch-icon-precomposed" sizes="180x180" href="/carnet-recettes/apple-touch-icon.png" /><link rel="manifest" href="/carnet-recettes/manifest.json" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><meta name="apple-mobile-web-app-title" content="Recettes" /></head>|' dist/index.html
       - uses: actions/configure-pages@v4
       - uses: actions/upload-pages-artifact@v3
         with:
