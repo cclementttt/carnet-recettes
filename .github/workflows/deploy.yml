@@ -22,6 +22,10 @@ jobs:
           node-version: 20
       - run: npm ci
       - run: npx expo export --platform web
+        env:
+          EXPO_PUBLIC_GEMINI_API_KEY: ${{ secrets.EXPO_PUBLIC_GEMINI_API_KEY }}
+          EXPO_PUBLIC_GROQ_API_KEY: ${{ secrets.EXPO_PUBLIC_GROQ_API_KEY }}
+          EXPO_PUBLIC_PEXELS_API_KEY: ${{ secrets.EXPO_PUBLIC_PEXELS_API_KEY }}
       - name: Add PWA meta tags
         run: |
           sed -i 's|</head>|<link rel="apple-touch-icon" sizes="180x180" href="/carnet-recettes/apple-touch-icon.png" /><link rel="apple-touch-icon-precomposed" sizes="180x180" href="/carnet-recettes/apple-touch-icon.png" /><link rel="manifest" href="/carnet-recettes/manifest.json" /><meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="default" /><meta name="apple-mobile-web-app-title" content="Recettes" /></head>|' dist/index.html
