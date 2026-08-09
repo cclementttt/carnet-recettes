@@ -114,6 +114,22 @@ export default function ShoppingListScreen({ navigation }: Props) {
         </Pressable>
       </View>
 
+      {items.length > 0 && (
+        <View style={styles.progressBar}>
+          <Text style={styles.progressText}>
+            {items.filter((i) => i.checked).length}/{items.length} article{items.length > 1 ? 's' : ''} coché{items.filter((i) => i.checked).length > 1 ? 's' : ''}
+          </Text>
+          <View style={styles.progressTrack}>
+            <View
+              style={[
+                styles.progressFill,
+                { width: `${(items.filter((i) => i.checked).length / items.length) * 100}%` as any },
+              ]}
+            />
+          </View>
+        </View>
+      )}
+
       <SectionList
         sections={sections}
         keyExtractor={(item) => item.id}
@@ -144,8 +160,10 @@ export default function ShoppingListScreen({ navigation }: Props) {
         )}
         ListEmptyComponent={
           <View style={styles.empty}>
+            <Text style={styles.emptyIcon}>🛒</Text>
+            <Text style={styles.emptyTitle}>Liste vide</Text>
             <Text style={styles.emptyText}>
-              Ta liste de courses est vide. Ajoute un article ci-dessus ou depuis une recette.
+              Ajoute un article ci-dessus ou depuis une recette.
             </Text>
           </View>
         }
@@ -284,15 +302,47 @@ const styles = StyleSheet.create({
     fontSize: 13,
     fontWeight: '700',
   },
+  progressBar: {
+    paddingHorizontal: spacing.lg,
+    paddingBottom: spacing.sm,
+  },
+  progressText: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: colors.textMuted,
+    marginBottom: spacing.xs,
+  },
+  progressTrack: {
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: colors.border,
+    overflow: 'hidden',
+  },
+  progressFill: {
+    height: '100%',
+    borderRadius: 2,
+    backgroundColor: colors.primary,
+  },
   empty: {
     paddingTop: 80,
     alignItems: 'center',
+  },
+  emptyIcon: {
+    fontSize: 48,
+    marginBottom: spacing.md,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: colors.text,
+    marginBottom: spacing.xs,
   },
   emptyText: {
     color: colors.textMuted,
     fontSize: 15,
     textAlign: 'center',
     paddingHorizontal: 40,
+    lineHeight: 21,
   },
   footer: {
     flexDirection: 'row',

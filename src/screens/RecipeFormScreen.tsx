@@ -284,8 +284,10 @@ export default function RecipeFormScreen({ navigation, route }: Props) {
           onPress={handleSave}
           disabled={saving}
         >
-          <Text style={styles.saveButtonText}>{saving ? 'Enregistrement...' : 'Enregistrer'}</Text>
+          <Text style={styles.saveButtonText}>{saving ? 'Enregistrement...' : (editId ? '✓ Sauvegarder' : '✓ Enregistrer')}</Text>
         </Pressable>
+
+        <View style={styles.bottomSpacer} />
       </ScrollView>
 
       <AddCategoryModal
@@ -494,8 +496,8 @@ const styles = StyleSheet.create({
     paddingVertical: spacing.lg,
     borderRadius: radius.md,
     alignItems: 'center',
-    marginTop: spacing.sm,
-    ...shadow.card,
+    marginTop: spacing.md,
+    ...shadow.fab,
   },
   saveButtonDisabled: {
     opacity: 0.6,
@@ -504,5 +506,9 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 16,
     fontWeight: '700',
+    letterSpacing: 0.3,
+  },
+  bottomSpacer: {
+    height: spacing.xl,
   },
 });

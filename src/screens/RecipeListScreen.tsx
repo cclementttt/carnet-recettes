@@ -138,14 +138,17 @@ export default function RecipeListScreen({ navigation }: Props) {
 
       {mode === 'mine' ? (
         <>
-          <TextInput
-            style={styles.search}
-            placeholder="Rechercher une recette ou un ingrédient..."
-            placeholderTextColor={colors.textMuted}
-            value={query}
-            onChangeText={setQuery}
-            clearButtonMode="while-editing"
-          />
+          <View style={styles.searchWrapper}>
+            <Text style={styles.searchIcon}>🔍</Text>
+            <TextInput
+              style={styles.search}
+              placeholder="Rechercher une recette ou un ingrédient..."
+              placeholderTextColor={colors.textMuted}
+              value={query}
+              onChangeText={setQuery}
+              clearButtonMode="while-editing"
+            />
+          </View>
           <SectionList
             sections={sections}
             keyExtractor={(item) => item.id}
@@ -162,9 +165,13 @@ export default function RecipeListScreen({ navigation }: Props) {
             )}
             ListEmptyComponent={
               <View style={styles.empty}>
+                <Text style={styles.emptyIcon}>{recipes.length === 0 ? '👨‍🍳' : '🔍'}</Text>
+                <Text style={styles.emptyTitle}>
+                  {recipes.length === 0 ? 'Ton carnet est vide' : 'Aucun résultat'}
+                </Text>
                 <Text style={styles.emptyText}>
                   {recipes.length === 0
-                    ? 'Aucune recette pour le moment. Ajoute la première !'
+                    ? 'Appuie sur + pour ajouter ta première recette !'
                     : 'Aucune recette ne correspond à ta recherche.'}
                 </Text>
               </View>
@@ -248,14 +255,23 @@ const styles = StyleSheet.create({
     color: colors.text,
     fontWeight: '700',
   },
-  search: {
+  searchWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
     margin: spacing.lg,
-    paddingHorizontal: spacing.lg,
-    paddingVertical: spacing.md,
-    borderRadius: radius.md,
+    paddingHorizontal: spacing.md,
+    borderRadius: radius.lg,
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
+  },
+  searchIcon: {
+    fontSize: 14,
+    marginRight: spacing.sm,
+  },
+  search: {
+    flex: 1,
+    paddingVertical: spacing.md,
     fontSize: 15,
     color: colors.text,
   },
@@ -263,25 +279,36 @@ const styles = StyleSheet.create({
     paddingBottom: 100,
   },
   sectionHeader: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '800',
     color: colors.textMuted,
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    letterSpacing: 0.8,
     backgroundColor: colors.background,
     paddingHorizontal: spacing.lg,
-    paddingTop: spacing.lg,
+    paddingTop: spacing.xl,
     paddingBottom: spacing.sm,
   },
   empty: {
-    paddingTop: 60,
+    paddingTop: 80,
     alignItems: 'center',
+  },
+  emptyIcon: {
+    fontSize: 48,
+    marginBottom: spacing.md,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: colors.text,
+    marginBottom: spacing.xs,
   },
   emptyText: {
     color: colors.textMuted,
     fontSize: 15,
     textAlign: 'center',
     paddingHorizontal: 40,
+    lineHeight: 21,
   },
   fab: {
     position: 'absolute',

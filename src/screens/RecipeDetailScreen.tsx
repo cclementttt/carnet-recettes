@@ -95,8 +95,20 @@ export default function RecipeDetailScreen({ route, navigation }: Props) {
           <Text style={styles.category}>{recipe.category}</Text>
           <Text style={styles.title}>{recipe.name}</Text>
 
+          <View style={styles.statsRow}>
+            <View style={styles.statBadge}>
+              <Text style={styles.statNumber}>{recipe.ingredients.length}</Text>
+              <Text style={styles.statLabel}>ingrédient{recipe.ingredients.length > 1 ? 's' : ''}</Text>
+            </View>
+            <View style={styles.statBadge}>
+              <Text style={styles.statNumber}>{recipe.steps.length}</Text>
+              <Text style={styles.statLabel}>étape{recipe.steps.length > 1 ? 's' : ''}</Text>
+            </View>
+          </View>
+
           <Pressable style={styles.shoppingListButton} onPress={handleAddToShoppingList}>
-            <Text style={styles.shoppingListButtonText}>🛒 Ajouter à la liste de courses</Text>
+            <Text style={styles.shoppingListButtonIcon}>🛒</Text>
+            <Text style={styles.shoppingListButtonText}>Ajouter à la liste de courses</Text>
           </Pressable>
 
           <Text style={styles.sectionTitle}>Ingrédients</Text>
@@ -168,7 +180,7 @@ const styles = StyleSheet.create({
   },
   photo: {
     width: '100%',
-    height: 260,
+    height: 280,
   },
   photoPlaceholder: {
     backgroundColor: colors.surfaceMuted,
@@ -176,36 +188,71 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   photoPlaceholderIcon: {
-    fontSize: 48,
+    fontSize: 56,
   },
   body: {
     padding: spacing.lg,
+    marginTop: -spacing.lg,
+    borderTopLeftRadius: radius.xl,
+    borderTopRightRadius: radius.xl,
+    backgroundColor: colors.background,
   },
   category: {
-    fontSize: 13,
+    fontSize: 12,
     fontWeight: '800',
     color: colors.primary,
     textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    letterSpacing: 0.8,
     marginBottom: spacing.xs,
   },
   title: {
-    fontSize: 26,
+    fontSize: 28,
     fontWeight: '800',
     color: colors.text,
+    marginBottom: spacing.md,
+    lineHeight: 34,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    gap: spacing.sm,
     marginBottom: spacing.lg,
   },
-  shoppingListButton: {
+  statBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: colors.surfaceMuted,
+    paddingHorizontal: spacing.md,
+    paddingVertical: spacing.xs + 2,
+    borderRadius: radius.pill,
+    gap: 4,
+  },
+  statNumber: {
+    fontSize: 14,
+    fontWeight: '800',
+    color: colors.primary,
+  },
+  statLabel: {
+    fontSize: 13,
+    color: colors.textMuted,
+    fontWeight: '500',
+  },
+  shoppingListButton: {
+    backgroundColor: colors.primary,
     paddingVertical: spacing.md,
     borderRadius: radius.md,
     alignItems: 'center',
-    marginBottom: spacing.lg,
+    marginBottom: spacing.xl,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: spacing.sm,
+  },
+  shoppingListButtonIcon: {
+    fontSize: 16,
   },
   shoppingListButtonText: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '700',
-    color: colors.text,
+    color: '#fff',
   },
   sectionTitle: {
     fontSize: 13,
