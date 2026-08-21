@@ -1,12 +1,12 @@
 import 'react-native-get-random-values';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { v4 as uuidv4 } from 'uuid';
 import { Recipe, RecipeInput } from '../types/recipe';
+import kvStore from './kvStore';
 
 const STORAGE_KEY = 'recipes';
 
 export async function getRecipes(): Promise<Recipe[]> {
-  const raw = await AsyncStorage.getItem(STORAGE_KEY);
+  const raw = await kvStore.getItem(STORAGE_KEY);
   if (!raw) return [];
   const recipes: Recipe[] = JSON.parse(raw);
   return recipes.sort((a, b) => b.createdAt - a.createdAt);
@@ -30,18 +30,18 @@ export async function addRecipe(input: RecipeInput): Promise<Recipe> {
     id: uuidv4(),
     createdAt: Date.now(),
   };
-  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify([...recipes, recipe]));
+  await kvStore.setItem(STORAGE_KEY, JSON.stringify([...recipes, recipe]));
   return recipe;
 }
 
 export async function updateRecipe(id: string, input: RecipeInput): Promise<void> {
   const recipes = await getRecipes();
   const updated = recipes.map((r) => (r.id === id ? { ...r, ...input } : r));
-  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  await kvStore.setItem(STORAGE_KEY, JSON.stringify(updated));
 }
 
 export async function deleteRecipe(id: string): Promise<void> {
   const recipes = await getRecipes();
   const filtered = recipes.filter((r) => r.id !== id);
-  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
+  await kvStore.setItem(STORAGE_KEY, JSON.stringify(filtered));
 }

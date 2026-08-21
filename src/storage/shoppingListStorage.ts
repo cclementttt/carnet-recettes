@@ -1,13 +1,13 @@
 import 'react-native-get-random-values';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { v4 as uuidv4 } from 'uuid';
 import { Ingredient } from '../types/recipe';
 import { ShoppingListItem } from '../types/shoppingList';
+import kvStore from './kvStore';
 
 const STORAGE_KEY = 'shoppingList';
 
 export async function getShoppingList(): Promise<ShoppingListItem[]> {
-  const raw = await AsyncStorage.getItem(STORAGE_KEY);
+  const raw = await kvStore.getItem(STORAGE_KEY);
   if (!raw) return [];
   const items: ShoppingListItem[] = JSON.parse(raw);
   return items.sort((a, b) => a.createdAt - b.createdAt);
@@ -27,7 +27,7 @@ export async function addIngredientsToShoppingList(
     checked: false,
     createdAt: Date.now(),
   }));
-  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify([...items, ...newItems]));
+  await kvStore.setItem(STORAGE_KEY, JSON.stringify([...items, ...newItems]));
 }
 
 export async function addManualItem(name: string): Promise<void> {
@@ -41,25 +41,25 @@ export async function addManualItem(name: string): Promise<void> {
     checked: false,
     createdAt: Date.now(),
   };
-  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify([...items, newItem]));
+  await kvStore.setItem(STORAGE_KEY, JSON.stringify([...items, newItem]));
 }
 
 export async function toggleShoppingItem(id: string): Promise<void> {
   const items = await getShoppingList();
   const updated = items.map((item) => (item.id === id ? { ...item, checked: !item.checked } : item));
-  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(updated));
+  await kvStore.setItem(STORAGE_KEY, JSON.stringify(updated));
 }
 
 export async function removeShoppingItem(id: string): Promise<void> {
   const items = await getShoppingList();
-  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(items.filter((item) => item.id !== id)));
+  await kvStore.setItem(STORAGE_KEY, JSON.stringify(items.filter((item) => item.id !== id)));
 }
 
 export async function clearCheckedItems(): Promise<void> {
   const items = await getShoppingList();
-  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(items.filter((item) => !item.checked)));
+  await kvStore.setItem(STORAGE_KEY, JSON.stringify(items.filter((item) => !item.checked)));
 }
 
 export async function clearShoppingList(): Promise<void> {
-  await AsyncStorage.setItem(STORAGE_KEY, JSON.stringify([]));
+  await kvStore.setItem(STORAGE_KEY, JSON.stringify([]));
 }
