@@ -11,7 +11,7 @@ export type AiRecipeSuggestion = {
 
 export type AiProvider = 'gemini' | 'groq';
 
-const GEMINI_MODEL = 'gemini-2.0-flash';
+const GEMINI_MODEL = 'gemini-3.6-flash';
 const GROQ_MODEL = 'llama-3.3-70b-versatile';
 
 const RECIPE_SHAPE_DESCRIPTION = `

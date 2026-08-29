@@ -8,6 +8,7 @@ import { deleteRecipe, getRecipeById } from '../storage/recipeStorage';
 import { addIngredientsToShoppingList } from '../storage/shoppingListStorage';
 import { colors, radius, shadow, spacing } from '../theme';
 import { Recipe } from '../types/recipe';
+import { confirmAction } from '../utils/confirm';
 import { exportRecipeAsPdf } from '../utils/exportRecipe';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'RecipeDetail'>;
@@ -59,17 +60,10 @@ export default function RecipeDetailScreen({ route, navigation }: Props) {
   const handleDelete = () => {
     if (!recipe) return;
     setActionsVisible(false);
-    Alert.alert('Supprimer la recette ?', recipe.name, [
-      { text: 'Annuler', style: 'cancel' },
-      {
-        text: 'Supprimer',
-        style: 'destructive',
-        onPress: async () => {
-          await deleteRecipe(recipe.id);
-          navigation.goBack();
-        },
-      },
-    ]);
+    confirmAction('Supprimer la recette ?', recipe.name, 'Supprimer', async () => {
+      await deleteRecipe(recipe.id);
+      navigation.goBack();
+    });
   };
 
   if (!recipe) {
