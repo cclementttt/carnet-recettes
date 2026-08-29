@@ -28,7 +28,7 @@
       "backgroundColor": "#FDF6F0"
     },
     "experiments": {
-      "baseUrl": "/carnet-recettes"
+      "baseUrl": ""
     }
   }
 }
